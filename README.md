@@ -1,5 +1,6 @@
-# Compiler
-
+<b>Description:</b> Simple compiler with the goal to read a foreign file, then to translate its contents into C code and write results into a separate .c file; the compiler is written as a Java program to take advantage of OOP.
+• Currently implemented: tokenization, variable-collision check, nondeclared variable-usage check
+<br><br>
 
 7 kinds of statements:
 1. #intnew,varname,;
