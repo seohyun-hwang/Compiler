@@ -1,0 +1,14 @@
+comments, whitespaces, and newlines are skipped
+
+#intnew,ik,; FK1
+#boolnew,kd,; FK2
+#intdef,ik=,; FK3
+#booldef,kd=,; FK4
+
+#while0,kd {
+}; FK5
+
+#while1,kd {
+}; FK6
+
+#println,ikl,; FK7
