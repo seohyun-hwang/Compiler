@@ -40,4 +40,5 @@ Abbreviation meanings:
 
 Additional rules: 
 1. Variable-names are case-sensitive; the rest is case-insensitive.
-2. The lexer skips whitespaces ` `, newlines `\n`, and anything outside statement markers `#` and `;` (perhaps within loop markers `{` and `}`).
+2. The lexer ignores whitespaces ` `, newlines `\n`, and any text outside statement markers `#` and `;` (perhaps within loop markers `{` and `}`).
+
