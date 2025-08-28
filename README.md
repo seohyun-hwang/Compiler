@@ -1,5 +1,8 @@
-<b>Description:</b> Simple compiler with the goal to read a foreign file, then to translate its contents into C code and write results into a separate .c file; the compiler is written as a Java program to take advantage of OOP.
+<b>Description:</b> Simple compiler with the goal to read a foreign `.shcl` file (Seohyun Hwang's compiled language), then to translate its contents into C code and write results into a separate `.c` file; the compiler is written as a Java program to take advantage of OOP.
 • Currently implemented: tokenization, variable-collision check, nondeclared variable-usage check
+• All source code is found within the `src` folder (incl. `Main.java`, `Lexer.java`, `Parser.java`, `SemAn.java`).
+• Sample source code in the new programming language is located in `main.shcl`.
+
 <br><br>
 
 7 kinds of statements:
