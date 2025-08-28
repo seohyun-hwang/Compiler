@@ -1,5 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -15,7 +16,7 @@ public class Lexer extends Main {
     static boolean isBooldefDeclared = false;
     static boolean isWhileFalseDeclared = false;
     static boolean isWhileTrueDeclared = false;
-    static boolean isPrintDeclared = false;
+    static boolean isPrintlnDeclared = false;
 
     public static void runLexer() {
         ArrayList<Character> word = new ArrayList<>();
@@ -55,6 +56,13 @@ public class Lexer extends Main {
                         isArgOpen = false;
                         tokSeq.add("$T1");
                         word.clear();
+                        isIntnewDeclared = false;
+                        isBoolnewDeclared = false;
+                        isIntdefDeclared = false;
+                        isBooldefDeclared = false;
+                        isWhileFalseDeclared = false;
+                        isWhileTrueDeclared = false;
+                        isPrintlnDeclared = false;
                         continue;
                     }
                     executeWhileStatementOpen(ch, word, lineCount);
@@ -80,7 +88,13 @@ public class Lexer extends Main {
                 }
                 else if (ch == ',') {
                     isIntnewDeclared = false;
-                    tokSeq.add(wordToString(word, 1));
+                    if (!isWordNumeric(word, 1)) {
+                        tokSeq.add(wordToString(word, 1));
+                    }
+                    else {
+                        System.out.println("ERROR: int-new-variable name should not be purely numeric!");
+                        System.exit(1);
+                    }
                 }
             }
             else if (isBoolnewDeclared) { // FK2
@@ -89,41 +103,84 @@ public class Lexer extends Main {
                 }
                 else if (ch == ',') {
                     isBoolnewDeclared = false;
-                    tokSeq.add(wordToString(word, 1));
+                    if (!isWordNumeric(word, 1)) {
+                        tokSeq.add(wordToString(word, 1));
+                    }
+                    else {
+                        System.out.println("ERROR: bool-new-variable name should not be purely numeric!");
+                        System.exit(1);
+                    }
                 }
             }
             else if (isIntdefDeclared) { // FK3
                 if (ch == '=') {
                     isArgOpen = true;
-                    tokSeq.add(wordToString(word, 1));
+                    if (!isWordNumeric(word, 1)) {
+                        tokSeq.add(wordToString(word, 1));
+                    }
+                    else {
+                        System.out.println("ERROR: use-variabe name for int-def should not be purely numeric!");
+                    }
                     tokSeq.add("$S1");
                     word.clear();
                 }
                 else if (ch == ',' && isArgOpen) {
                     isIntdefDeclared = false;
                     isArgOpen = false;
+                    if (!isWordNumeric(word, 1)) {
+                        tokSeq.add("$UV");
+                        tokSeq.add(wordToString(word, 1));
+                    }
+                    else {
+                        tokSeq.add("$NL");
+                        tokSeq.add(wordToString(word, 1));
+                    }
                 }
                 else if (ch == '+') {
-                    tokSeq.add("$UV1");
-                    tokSeq.add(wordToString(word, 1));
+                    if (!isWordNumeric(word, 1)) {
+                        tokSeq.add("$UV");
+                        tokSeq.add(wordToString(word, 1));
+                    }
+                    else {
+                        tokSeq.add("$NL");
+                        tokSeq.add(wordToString(word, 1));
+                    }
                     tokSeq.add("$ADD");
                     word.clear();
                 }
                 else if (ch == '-') {
-                    tokSeq.add("$UV1");
-                    tokSeq.add(wordToString(word, 1));
+                    if (!isWordNumeric(word, 1)) {
+                        tokSeq.add("$UV");
+                        tokSeq.add(wordToString(word, 1));
+                    }
+                    else {
+                        tokSeq.add("$NL");
+                        tokSeq.add(wordToString(word, 1));
+                    }
                     tokSeq.add("$SUBT");
                     word.clear();
                 }
                 else if (ch == '*') {
-                    tokSeq.add("$UV1");
-                    tokSeq.add(wordToString(word, 1));
+                    if (!isWordNumeric(word, 1)) {
+                        tokSeq.add("$UV");
+                        tokSeq.add(wordToString(word, 1));
+                    }
+                    else {
+                        tokSeq.add("$NL");
+                        tokSeq.add(wordToString(word, 1));
+                    }
                     tokSeq.add("$MULT");
                     word.clear();
                 }
                 else if (ch == '/') {
-                    tokSeq.add("$UV1");
-                    tokSeq.add(wordToString(word, 1));
+                    if (!isWordNumeric(word, 1)) {
+                        tokSeq.add("$UV");
+                        tokSeq.add(wordToString(word, 1));
+                    }
+                    else {
+                        tokSeq.add("$NL");
+                        tokSeq.add(wordToString(word, 1));
+                    }
                     tokSeq.add("$DIV");
                     word.clear();
                 }
@@ -131,29 +188,61 @@ public class Lexer extends Main {
             else if (isBooldefDeclared) { // FK4
                 if (ch == '=') {
                     isArgOpen = true;
-                    tokSeq.add(wordToString(word, 1));
+                    if (!isWordNumeric(word, 1)) {
+                        tokSeq.add(wordToString(word, 1));
+                    }
+                    else {
+                        System.out.println("ERROR: use-variable for bool-def should not be purely numeric!");
+                        System.exit(1);
+                    }
                     tokSeq.add("$S1");
                     word.clear();
                 }
                 else if (ch == ',' && isArgOpen) {
                     isBooldefDeclared = false;
                     isArgOpen = false;
+                    if (!isWordNumeric(word, 1)) {
+                        tokSeq.add("$UV");
+                        tokSeq.add(wordToString(word, 1));
+                    }
+                    else {
+                        tokSeq.add("$NL");
+                        tokSeq.add(wordToString(word, 1));
+                    }
                 }
                 else if (ch == ':') {
-                    tokSeq.add("$UV2");
-                    tokSeq.add(wordToString(word, 1));
+                    if (!isWordNumeric(word, 1)) {
+                        tokSeq.add("$UV");
+                        tokSeq.add(wordToString(word, 1));
+                    }
+                    else {
+                        tokSeq.add("$NL");
+                        tokSeq.add(wordToString(word, 1));
+                    }
                     tokSeq.add("$EQCOND"); // conditional equality
                     word.clear();
                 }
                 else if (ch == '<') {
-                    tokSeq.add("$UV2");
-                    tokSeq.add(wordToString(word, 1));
+                    if (!isWordNumeric(word, 1)) {
+                        tokSeq.add("$UV");
+                        tokSeq.add(wordToString(word, 1));
+                    }
+                    else {
+                        tokSeq.add("$NL");
+                        tokSeq.add(wordToString(word, 1));
+                    }
                     tokSeq.add("$LESSER"); // lesser than
                     word.clear();
                 }
                 else if (ch == '>') {
-                    tokSeq.add("$UV2");
-                    tokSeq.add(wordToString(word, 1));
+                    if (!isWordNumeric(word, 1)) {
+                        tokSeq.add("$UV");
+                        tokSeq.add(wordToString(word, 1));
+                    }
+                    else {
+                        tokSeq.add("$NL");
+                        tokSeq.add(wordToString(word, 1));
+                    }
                     tokSeq.add("$GREATER"); // greater than
                     word.clear();
                 }
@@ -161,7 +250,13 @@ public class Lexer extends Main {
             else if (isWhileFalseDeclared) { // FK5
                 if (ch == '{') {
                     isLoopOpen = true;
-                    tokSeq.add(wordToString(word, 1));
+                    if (!isWordNumeric(word, 1)) {
+                        tokSeq.add(wordToString(word, 1));
+                    }
+                    else {
+                        System.out.println("ERROR: use-variable for while0 should not be purely numeric!");
+                        System.exit(1);
+                    }
                     tokSeq.add("$S2");
                 }
                 else if (ch == '}') {
@@ -172,7 +267,13 @@ public class Lexer extends Main {
             else if (isWhileTrueDeclared) {  // FK6
                 if (ch == '{') {
                     isLoopOpen = true;
-                    tokSeq.add(wordToString(word, 1));
+                    if (!isWordNumeric(word, 1)) {
+                        tokSeq.add(wordToString(word, 1));
+                    }
+                    else {
+                        System.out.println("ERROR: use-variable for while1 should not be purely numeric!");
+                        System.exit(1);
+                    }
                     tokSeq.add("$S2");
                 }
                 else if (ch == '}') {
@@ -180,10 +281,16 @@ public class Lexer extends Main {
                     tokSeq.add("$T2");
                 }
             }
-            else if (isPrintDeclared) { // FK7
+            else if (isPrintlnDeclared) { // FK7
                 if (ch == ',') {
-                    isPrintDeclared = false;
-                    tokSeq.add(wordToString(word, 1));
+                    isPrintlnDeclared = false;
+                    if (!isWordNumeric(word, 1)) {
+                        tokSeq.add(wordToString(word, 1));
+                    }
+                    else {
+                        System.out.println("ERROR: use-variable for println should not be purely numeric!");
+                        System.exit(1);
+                    }
                 }
             }
         }
@@ -232,7 +339,7 @@ public class Lexer extends Main {
         else if (wordToString(word, 0).equalsIgnoreCase("#println,")) { // while-false loop declaration
             word.clear();
             isFirstKeyword = false;
-            isPrintDeclared = true;
+            isPrintlnDeclared = true;
             tokSeq.add("$FK7");
             //tokSeq.add("FK_PRINTLN");
         }
@@ -244,6 +351,22 @@ public class Lexer extends Main {
             charArray[i] = word.get(i);
         }
         return new String(charArray); // converting the char-array "charArray" to a String value
+    }
+    public static boolean isWordNumeric(ArrayList<Character> word, int n) {
+        boolean isCharAnInt = false;
+        int[] radix10 = {0,1,2,3,4,5,6,7,8,9};
+        for (int i = 0; i < word.size() - n; i++) { // checking whether every element of ArrayList "word" is a base-10 digit
+            for (int j = 0; j < radix10.length; j++) {
+                if (word.get(i) == radix10[j]) {
+                    isCharAnInt = true;
+                    break;
+                }
+            }
+            if (!isCharAnInt) {
+                return false;
+            }
+        }
+        return true;
     }
     public static void syntaxError(int lineCount) {
         System.out.println("\nERROR: SyntaxError: ya messed up the syntax! check line " + lineCount + ".");

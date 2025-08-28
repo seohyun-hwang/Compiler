@@ -71,7 +71,7 @@ public class Parser extends Lexer {
             }
         }
     }
-    public static void parsingStage2() { // checks whether def-variable and use-variable names all match with new-variable names
+    public static void parsingStage2() { // checks whether def-variable names all match with new-variable names
         for (int i = 0; i < tokSeq.size(); i++) { // scans the ArrayList "tokSeq"
             if (tokSeq.get(i).equals("$FK3")) {
                 boolean variableIncluded = false;
@@ -95,34 +95,50 @@ public class Parser extends Lexer {
                     }
                 }
                 if (!variableIncluded) {
-                    System.out.println("\nERROR: an bool-def variable does not match any of the new-bool-variable names!");
+                    System.out.println("\nERROR: a bool-def variable does not match any of the new-bool-variable names!");
                     System.exit(1);
                 }
             }
-            else if (tokSeq.get(i).equals("$UV1")) {
-                boolean variableIncluded = true;
+            else if (tokSeq.get(i).equals("$FK5") || tokSeq.get(i).equals("$FK6") || tokSeq.get(i).equals("$FK7")) {
+                boolean variableIncluded = false;
                 for (int j = 0; j < varNamesInt.size(); j++) {
                     if (tokSeq.get(i + 1).equals(varNamesInt.get(j))) {
-                        variableIncluded = false;
+                        variableIncluded = true;
                         break;
                     }
                 }
                 if (!variableIncluded) {
-                    shouldParserCrash = true;
-                    break;
+                    for (int j = 0; j < varNamesBool.size(); j++) {
+                        if (tokSeq.get(i + 1).equals(varNamesBool.get(j))) {
+                            variableIncluded = true;
+                            break;
+                        }
+                    }
+                    if (!variableIncluded) {
+                        if (tokSeq.get(i).equals("$FK5")) {
+                            System.out.println("\nERROR: a while0 use-variable does not match any of the new-variable names!");
+                        }
+                        else if (tokSeq.get(i).equals("$FK6")) {
+                            System.out.println("\nERROR: a while1 use-variable does not match any of the new-variable names!");
+                        }
+                        if (tokSeq.get(i).equals("$FK7")) {
+                            System.out.println("\nERROR: a println use-variable does not match any of the new-variable names!");
+                        }
+                        System.exit(1);
+                    }
                 }
             }
             else if (tokSeq.get(i).equals("$UV2")) {
-                boolean variableIncluded = true;
+                boolean variableIncluded = false;
                 for (int j = 0; j < varNamesBool.size(); j++) {
                     if (tokSeq.get(i + 1).equals(varNamesBool.get(j))) {
-                        variableIncluded = false;
+                        variableIncluded = true;
                         break;
                     }
                 }
                 if (!variableIncluded) {
-                    shouldParserCrash = true;
-                    break;
+                    System.out.println("\nERROR: a use-variable does not match any of the new-bool-variable names!");
+                    System.exit(1);
                 }
             }
         }
