@@ -24,12 +24,25 @@ Token naming:
 5. `#while0,` --> $FK5
 6. `#while1,` --> $FK6
 7. `#print,` --> $FK7
-9.  variable in FK4, FK5, or FK6 --> $UV
-10. numeric literal in FK5 or FK6 --> $NL
-11. `=` --> $S1 (start of arithmetic argument)
-12. `{` --> $S2 (start of loop)
-13. `;` --> $T1 (end of arithmetic argument)
-14. `}` --> $T2 (end of loop)
+8. Variable in argument of FK3 --> $UV1
+9. Variable in argument of FK4 --> $UV2
+10. Numeric-literal in FK1 --> $NL1
+11. Numeric-literal in FK2 --> $NL2
+12. Numeric-literal in FK3 --> $NL3
+13. Numeric-literal in FK4 --> $NL4
+14. Boolean false --> $B0
+15. Boolean true --> $B1
+16. `+` (addition operator) --> $ADD+
+17. `-` (subtraction operator) --> $SUBT-
+18. `*` (multiplication operator) --> $MULT*
+19. `/` (division operator) --> $DIV/
+20. `:` (conditional equality) --> $CEQ:
+21. `<` (lesser than) --> $LESSER<
+22. `>` (greater than) --> $GREATER>
+23. `=` --> $S1 (start of arithmetic argument)
+24. `{` --> $S2 (start of loop)
+25. `;` --> $T1 (end of arithmetic argument)
+26. `}` --> $T2 (end of loop)
 
 Abbreviation meanings:
 1. FK: first keyword
