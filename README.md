@@ -1,4 +1,4 @@
-PROJECT STILL IN PROGRESS!
+PROJECT STILL IN PROGRESS!<br>
 <b>Description:</b> Simple compiler with the goal to read a foreign `.shcl` file (Seohyun Hwang's compiled language), then to translate its contents into C code and write results into a separate `.c` file; the compiler is written as a Java program to take advantage of OOP.<br>
 • Currently implemented: tokenization, variable-collision check, nondeclared variable-usage check<br>
 • All source code is found within the `src` folder (incl. `Main.java`, `Lexer.java`, `Parser.java`, `SemAn.java`).<br>
