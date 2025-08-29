@@ -5,7 +5,7 @@ PROJECT STILL IN PROGRESS!<br>
 • Sample source code in the new programming language is located in `main.shcl`.<br>
 <br><br>
 
-7 kinds of statements:
+7 statement-types
 1. #intnew,varname,;
 2. #boolnew,varname,;
 3. #intdef,varname=arithmeticArgument,;
@@ -54,5 +54,6 @@ Abbreviation meanings:
 
 Additional rules: 
 1. Variable-names are case-sensitive; the rest is case-insensitive.
-2. The lexer ignores whitespaces ` `, newlines `\n`, and any text outside statement markers `#` and `;` (perhaps within loop markers `{` and `}`).
+2. Variable-names must be purely alphanumeric. They cannot be purely numeric. A number can exist at any position within the variable-name.
+3. The lexer ignores whitespaces ` `, newlines `\n`, and any text outside statement markers `#` and `;` (perhaps within loop markers `{` and `}`).
 
