@@ -1,5 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -84,11 +85,11 @@ public class Lexer extends Main {
             if (isIntnewDeclared) { // FK1
                 if (ch == '=') {
                     isArgOpen = true;
-                    if (!isWordNumeric(word, 1)) {
+                    if (isWordAlphanumeric(word, 1)) {
                         tokSeq.add(wordToString(word, 1));
                     }
                     else {
-                        System.out.println("TOKENIZATION ERROR: int-new-variable name should not be purely numeric!");
+                        System.out.println("\nTOKENIZATION ERROR: int-new-variable name should not be purely numeric!");
                     }
                     tokSeq.add("$S1");
                     word.clear();
@@ -99,7 +100,7 @@ public class Lexer extends Main {
                         tokSeq.add(wordToString(word, 1));
                     }
                     else {
-                        System.out.println("TOKENIZATION ERROR: int-new-variable argument must be purely numeric!");
+                        System.out.println("\nTOKENIZATION ERROR: int-new-variable argument must be purely numeric!");
                         System.exit(1);
                     }
                 }
@@ -107,11 +108,11 @@ public class Lexer extends Main {
             else if (isBoolnewDeclared) { // FK2
                 if (ch == '=') {
                     isArgOpen = true;
-                    if (!isWordNumeric(word, 1)) {
+                    if (isWordAlphanumeric(word, 1)) {
                         tokSeq.add(wordToString(word, 1));
                     }
                     else {
-                        System.out.println("TOKENIZATION ERROR: bool-new-variable name should not be purely numeric!");
+                        System.out.println("\nTOKENIZATION ERROR: bool-new-variable name should not be purely numeric!");
                         System.exit(1);
                     }
                     tokSeq.add("$S1");
@@ -125,7 +126,7 @@ public class Lexer extends Main {
                         tokSeq.add("$B1");
                     }
                     else {
-                        System.out.println("TOKENIZATION ERROR: please only enter 0 (false) or 1 (true) for new-boolean-variable argument!");
+                        System.out.println("\nTOKENIZATION ERROR: please only enter 0 (false) or 1 (true) for new-boolean-variable argument!");
                         System.exit(1);
                     }
                 }
@@ -137,7 +138,7 @@ public class Lexer extends Main {
                         tokSeq.add(wordToString(word, 1));
                     }
                     else {
-                        System.out.println("TOKENIZATION ERROR: use-variable name for int-def should not be purely numeric!");
+                        System.out.println("\nTOKENIZATION ERROR: use-variable name for int-def should not be purely numeric!");
                     }
                     tokSeq.add("$S1");
                     word.clear();
@@ -210,7 +211,7 @@ public class Lexer extends Main {
                         tokSeq.add(wordToString(word, 1));
                     }
                     else {
-                        System.out.println("TOKENIZATION ERROR: use-variable for bool-def should not be purely numeric!");
+                        System.out.println("\nTOKENIZATION ERROR: use-variable for bool-def should not be purely numeric!");
                         System.exit(1);
                     }
                     tokSeq.add("$S1");
@@ -272,7 +273,7 @@ public class Lexer extends Main {
                         tokSeq.add(wordToString(word, 1));
                     }
                     else {
-                        System.out.println("TOKENIZATION ERROR: use-variable for while0 should not be purely numeric!");
+                        System.out.println("\nTOKENIZATION ERROR: use-variable for while0 should not be purely numeric!");
                         System.exit(1);
                     }
                     tokSeq.add("$S2");
@@ -289,7 +290,7 @@ public class Lexer extends Main {
                         tokSeq.add(wordToString(word, 1));
                     }
                     else {
-                        System.out.println("TOKENIZATION ERROR: use-variable for while1 should not be purely numeric!");
+                        System.out.println("\nTOKENIZATION ERROR: use-variable for while1 should not be purely numeric!");
                         System.exit(1);
                     }
                     tokSeq.add("$S2");
@@ -306,7 +307,7 @@ public class Lexer extends Main {
                         tokSeq.add(wordToString(word, 1));
                     }
                     else {
-                        System.out.println("TOKENIZATION ERROR: use-variable for println should not be purely numeric!");
+                        System.out.println("\nTOKENIZATION ERROR: use-variable for println should not be purely numeric!");
                         System.exit(1);
                     }
                 }
@@ -384,6 +385,29 @@ public class Lexer extends Main {
                 return false;
             }
             isCharAnInt = false;
+        }
+        return true;
+    }
+    public static boolean isWordAlphanumeric(ArrayList<Character> word, int n) {
+        char[] alphanumChar = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','0','1','2','3','4','5','6','7','8','9'};
+        boolean isCharAnAlphanum = false;
+        if (!isWordNumeric(word, n)) {
+            for (int i = 0; i < word.size() - n; i++) {
+                for (int j = 0; j < alphanumChar.length; j++) {
+                    if (word.get(i) == alphanumChar[j]) {
+                        isCharAnAlphanum = true;
+                        break;
+                    }
+                }
+                if (!isCharAnAlphanum) {
+                    System.out.println("\nTOKENIZATION ERROR: found a variable that is not purely alphanumeric.");
+                    System.exit(1);
+                    return false;
+                }
+            }
+        }
+        else {
+            return false;
         }
         return true;
     }

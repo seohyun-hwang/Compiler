@@ -1,4 +1,5 @@
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class SemAn extends Parser {
@@ -16,6 +17,17 @@ public class SemAn extends Parser {
             e.printStackTrace();
         }
 
+    }
+    public static void SemAnStage1() { // determining each variable's value at each variable-usage + unrolling the while loops
 
     }
+    /*public static void SemAnStage2() { // writing into main.c
+        try (FileOutputStream document = new FileOutputStream("main.c")) {
+            document.write();
+            System.out.println("Compiling has finished! Check your main.c file.");
+        } catch (IOException e) {
+            System.out.println("There was an error writing into the main.c file.");
+            System.exit(1);
+        }
+    }*/
 }

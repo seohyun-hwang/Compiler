@@ -8,7 +8,7 @@ public class Main {
     static boolean shouldSemAnCrash = false;
 
     public static void main(String[] args) {
-        System.out.println("Welcome to my partially-completed compiler (lexer"/* + parser + semantic-analyzer*/ + ")!\n\n\n.shcl Source code below:");
+        System.out.println("Welcome to my partially-completed compiler (lexer + parser"/* + semantic-analyzer*/ + ")!\n\n\n.shcl Source code below:");
         long startTime = System.nanoTime(); // starts a 'stopwatch'
 
         Lexer.runLexer(); // runs contends of the class "Lexer" (Lexical analysis)

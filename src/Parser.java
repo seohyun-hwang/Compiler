@@ -31,6 +31,8 @@ public class Parser extends Lexer {
         }
         parsingStage1();
         parsingStage2();
+        parsingStage3();
+
     }
     public static void parsingStage1() { // crash if there are duplicate new-variable names.
         int varMatchCountInt = 0;
@@ -71,7 +73,7 @@ public class Parser extends Lexer {
             }
         }
     }
-    public static void parsingStage2() { // checks whether def-variable names all match with new-variable names + checks that bool-use-variables in neither int-def nor bool-def declarations.
+    public static void parsingStage2() { // checks whether def-variable names all match with new-variable names + checks that bool-use-variables exist neither in int-def nor in bool-def declarations.
         for (int i = 0; i < tokSeq.size(); i++) { // scans the ArrayList "tokSeq"
             if (tokSeq.get(i).equals("$FK3")) {
                 boolean variableIncluded = false;
@@ -180,7 +182,35 @@ public class Parser extends Lexer {
             }
         }
     }
-    public static void parsingStage3() { //
+    public static void parsingStage3() { // crash if there is an empty while loop or if there is a conditional argument of a bool-def declaration containing more than one type of conditional operator.
+        boolean enteredFK4 = false;
+        int condOpCount = 0;
+        for (int i = 0; i < tokSeq.size(); i++) {
+            if (tokSeq.get(i).equals("$FK4")) {
+                enteredFK4 = true;
+            }
+            else if (tokSeq.get(i).equals("$GREATER>") || tokSeq.get(i).equals("$LESSER<") || tokSeq.get(i).equals("$CEQ:")) {
+                condOpCount++;
+            }
+            else if (tokSeq.get(i).equals("$T1") && enteredFK4) {
+                enteredFK4 = false;
+                if (condOpCount > 1) {
+                    System.out.println("PARSING ERROR: you entered more than one conditional operator in the same bool-var-def declaration.");
+                    System.exit(1);
+                }
+                condOpCount = 0;
+            }
+            else if (tokSeq.get(i).equals("$S2")) { // checks whether a while loop is empty
+                if (tokSeq.get(i + 1).equals("$T2")) {
+                    System.out.println("PARSING ERROR: your while loop is empty!");
+                    System.exit(1);
+                }
+            }
+        }
+    }
+    public static void parsingStage4() { // PEMDAS hierarchical ordering of arithmetic operations/operands + final reordering of tokSeq to tokSeq2
 
     }
-}
+
+ }
+

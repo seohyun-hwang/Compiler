@@ -3,7 +3,7 @@ comments, whitespaces, and newlines are skipped
 #intnew,ik=5,; FK1 with numeric-literal argument
 #boolnew,kd=0,; FK2 with 0/1 (true/false) argument
 #intdef,ik=343+ik,; FK3 with arithmetic argument
-#booldef,kd=ik>0,; FK4
+#booldef,kd=ik>0,; FK4 with conditional argument
 
 #while0,kd {
 }; FK5
