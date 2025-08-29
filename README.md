@@ -40,9 +40,9 @@ Token naming:
 20. `:` (conditional equality) --> $CEQ:
 21. `<` (lesser than) --> $LESSER<
 22. `>` (greater than) --> $GREATER>
-23. `=` --> $S1 (start of arithmetic argument)
+23. `=` --> $S1 (start of arithmetic/conditional argument)
 24. `{` --> $S2 (start of loop)
-25. `;` --> $T1 (end of arithmetic argument)
+25. `;` --> $T1 (end of arithmetic/conditional argument)
 26. `}` --> $T2 (end of loop)
 
 Abbreviation meanings:
