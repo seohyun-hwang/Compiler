@@ -16,6 +16,6 @@ public class Main {
         Parser.runParser(); // runs contents of the class "Parser" (Syntactic analysis)
         System.out.println("\nParsing successful! Time elapsed in total: ca. " + (System.nanoTime() - startTime) + " nanoseconds.");
         SemAn.runSemAn(); // runs contents of the class "SemAn" (Semantic analysis)
-        //System.out.println("\nFinal translation successful! Time elapsed in total: ca. " + (System.nanoTime() - startTime) + " nanoseconds.");
+        System.out.println("\nFinal translation successful! Time elapsed in total: ca. " + (System.nanoTime() - startTime) + " nanoseconds.");
     }
 }

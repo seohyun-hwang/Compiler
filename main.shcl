@@ -6,9 +6,11 @@ comments, whitespaces, and newlines are skipped
 #booldef,kd=ik>0,; FK4 with conditional argument
 
 #while0,kd {
+    #intdef,ik=43,;
 }; FK5
 
 #while1,kd {
+    #intdef,ik=35,;
 }; FK6
 
 #println,ik,; FK7

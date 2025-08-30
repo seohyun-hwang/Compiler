@@ -1,31 +1,28 @@
+import java.sql.Array;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Parser extends Lexer {
-    static ArrayList<String> tokSeq2 = new ArrayList<>();
     static ArrayList<String> varNamesInt = new ArrayList<>();
     static ArrayList<String> varNamesBool = new ArrayList<>();
+
+    static ArrayList<String> tokSeq2 = new ArrayList<>();
 
     public static void runParser() {
         for (int i = 0; i < tokSeq.size(); i++) { // scans the ArrayList "tokSeq"
             if (shouldParserCrash) {
                 break;
-            }
-            else if (tokSeq.get(i).equals("$FK1")) {
+            } else if (tokSeq.get(i).equals("$FK1")) {
                 varNamesInt.add(tokSeq.get(i + 1));
-            }
-            else if (tokSeq.get(i).equals("$FK2")) {
+            } else if (tokSeq.get(i).equals("$FK2")) {
                 varNamesBool.add(tokSeq.get(i + 1));
-            }
-            else if (tokSeq.get(i).equals("$FK3")) {
+            } else if (tokSeq.get(i).equals("$FK3")) {
 
-            }
-            else if (tokSeq.get(i).equals("$FK4")) {
+            } else if (tokSeq.get(i).equals("$FK4")) {
 
-            }
-            else if (tokSeq.get(i).equals("$FK5")) {
+            } else if (tokSeq.get(i).equals("$FK5")) {
 
-            }
-            else if (tokSeq.get(i).equals("$FK6")) {
+            } else if (tokSeq.get(i).equals("$FK6")) {
                 tokSeq2.add("$FK7");
             }
         }
@@ -33,7 +30,110 @@ public class Parser extends Lexer {
         parsingStage2();
         parsingStage3();
 
+        // final stage: PEMDAS hierarchical ordering of arithmetic operations/operands + final reordering of tokSeq to tokSeq2
+        List<ParserHelper> parserObjects = new ArrayList<>();
+        ArrayList<Integer> parserObjectsStatementIndex = new ArrayList<>();
+        int tokSeqPos;
+        boolean hasLeftChildAvailable;
+        boolean hasRightChildAvailable;
+        String previousToken;
+        int parentNodePos;
+        int directionFromParent;
+        int treeRow;
+
+        boolean isFK3 = false; // whether we're dealing with a statement containing an arithmetic argument
+        boolean isArithArg = false; // whether we're dealing with an arithmetic argument
+        int arithArgCount = 0;
+        int max_tokSeqPos = 0; // highest tokSeq position-index of an element of the parserObjects ArrayList
+        int min_tokSeqPos = tokSeq.size() - 1; // lowest tokSeq position-index of an element of the parserObjects ArrayList
+
+        for (int i = 0; i < tokSeq.size(); i++) { // arrange the ArrayList elements for the next step
+            if (isArithArg) {
+                if (tokSeq.get(i).equals("$T1")) {
+                    isFK3 = false;
+                    isArithArg = false;
+                    binarySearchTree(max_tokSeqPos, min_tokSeqPos, parserObjects, parserObjectsStatementIndex, arithArgCount);
+                    arithArgCount++;
+                } else if (tokSeq.get(i).equals("$NL3")) {
+                    parserObjects.add(new ParserHelper(i + 1, false, false, "NL", -1, -1, 0));
+                    if (i + 1 > max_tokSeqPos) {
+                        max_tokSeqPos = i + 1;
+                    }
+                    if (i + 1 < min_tokSeqPos) {
+                        max_tokSeqPos = i + 1;
+                    }
+                } else if (tokSeq.get(i).equals("$UV1")) {
+                    parserObjects.add(new ParserHelper(i + 1, false, false, "UV", -1, -1, 0));
+                    if (i + 1 > max_tokSeqPos) {
+                        max_tokSeqPos = i + 1;
+                    }
+                    if (i + 1 < min_tokSeqPos) {
+                        max_tokSeqPos = i + 1;
+                    }
+                } else if (tokSeq.get(i).equals("$ADD+")) {
+                    parserObjects.add(new ParserHelper(i + 1, true, true, "+", -1, -1, 0));
+                    if (i + 1 > max_tokSeqPos) {
+                        max_tokSeqPos = i + 1;
+                    }
+                    if (i + 1 < min_tokSeqPos) {
+                        max_tokSeqPos = i + 1;
+                    }
+                } else if (tokSeq.get(i).equals("$SUBT-")) {
+                    parserObjects.add(new ParserHelper(i + 1, true, true, "-", -1, -1, 0));
+                    if (i + 1 > max_tokSeqPos) {
+                        max_tokSeqPos = i + 1;
+                    }
+                    if (i + 1 < min_tokSeqPos) {
+                        max_tokSeqPos = i + 1;
+                    }
+                } else if (tokSeq.get(i).equals("$MULT*")) {
+                    parserObjects.add(new ParserHelper(i + 1, true, true, "*", -1, -1, 0));
+                    if (i + 1 > max_tokSeqPos) {
+                        max_tokSeqPos = i + 1;
+                    }
+                    if (i + 1 < min_tokSeqPos) {
+                        max_tokSeqPos = i + 1;
+                    }
+                } else if (tokSeq.get(i).equals("$DIV/")) {
+                    parserObjects.add(new ParserHelper(i + 1, true, true, "/", -1, -1, 0));
+                    if (i + 1 > max_tokSeqPos) {
+                        max_tokSeqPos = i + 1;
+                    }
+                    if (i + 1 < min_tokSeqPos) {
+                        max_tokSeqPos = i + 1;
+                    }
+                }
+            } else if (tokSeq.get(i).equals("$FK4")) {
+                isFK3 = true;
+            } else if (isFK3 && tokSeq.get(i).equals("$S1")) {
+                isArithArg = true;
+            }
+        }
     }
+    public static void binarySearchTree(int max_tokSeqPos, int min_tokSeqPos, List<ParserHelper> parserObjects, ArrayList<Integer> parserObjectsStatementIndex, int arithArgCount) {
+        int subtClosestToMiddle = getSubtClosestToMiddle(max_tokSeqPos, min_tokSeqPos, parserObjects);
+        if (arithArgCount == 0) {
+            for (int i = 0; i < parserObjects.size(); i++) { // construct the binary-search-tree of arithmetic operators/operands
+                if (parserObjects.get(i).getPreviousToken().equals("-") && i != subtClosestToMiddle) {
+
+                }
+                parserObjectsStatementIndex.add(arithArgCount);
+            }
+            parserObjects.clear();
+        }
+
+    }
+    public static int getSubtClosestToMiddle(int max_tokSeqPos, int min_tokSeqPos, List<ParserHelper> parserObjects) {
+        int mid_tokSeqPos = (max_tokSeqPos + min_tokSeqPos) / 2; // midmost tokSeq position-index of an element of the parserObjects ArrayList
+        int subtClosestToMiddle = max_tokSeqPos - mid_tokSeqPos;
+        for (int i = 0; i < parserObjects.size(); i++) { // find the midmost subtraction operator
+            if (parserObjects.get(i).getPreviousToken().equals("-") && Math.abs(parserObjects.get(i).getTokSeqPos() - mid_tokSeqPos) < subtClosestToMiddle) {
+                subtClosestToMiddle = Math.abs(parserObjects.get(i).getTokSeqPos() - mid_tokSeqPos);
+            }
+        }
+        return subtClosestToMiddle;
+    }
+
     public static void parsingStage1() { // crash if there are duplicate new-variable names.
         int varMatchCountInt = 0;
         int varMatchCountBool = 0;
@@ -208,9 +308,5 @@ public class Parser extends Lexer {
             }
         }
     }
-    public static void parsingStage4() { // PEMDAS hierarchical ordering of arithmetic operations/operands + final reordering of tokSeq to tokSeq2
-
-    }
-
  }
 
